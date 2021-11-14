@@ -9,8 +9,8 @@ from Handlers import Handlers
 class Dispatcher:
     __handlers = {
         Type.MESSAGE: Handlers.send_message,
-        Type.DELETE_DIALOG: Handlers.send_message,
-        Type.DELETE_MASSAGE: Handlers.send_message,
+        Type.DELETE_DIALOG: Handlers.delete_dialog,
+        Type.DELETE_MASSAGE: Handlers.delete_message,
         Type.ERROR: Handlers.error
     }
 
