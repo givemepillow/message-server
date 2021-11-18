@@ -11,19 +11,24 @@ class Dispatcher:
         Type.MESSAGE: Handlers.send_message,
         Type.DELETE_DIALOG: Handlers.delete_dialog,
         Type.DELETE_MASSAGE: Handlers.delete_message,
-        Type.ERROR: Handlers.error
+        Type.ERROR: Handlers.error,
+        Type.INIT: Handlers.init
     }
 
+    # return receiver id and answer
     @classmethod
     def handle(cls, data, fd):
         try:
             request = cls.__load_request(data)
-            user_id = cls.__extract_user_id(request, fd)
+            to_id, from_id = cls.__extract_user_id(request)
+            Clients.set_client(from_id, fd)  # set: id - fd - connection
             answer = cls.__execute_handler(request)
-            return user_id, answer
+            if to_id == from_id:
+                return (to_id,), answer
+            return (from_id, to_id), answer
         except ValueError as e:
-            _ERROR = -1
-            return _ERROR, cls.__error_handler(str(e))
+            print(e)
+            return (), cls.__error_handler(str(e))
 
     @classmethod
     def __error_handler(cls, error_message):
@@ -39,10 +44,11 @@ class Dispatcher:
             raise ValueError("Invalid request type.")
 
     @classmethod
-    def __extract_user_id(cls, request, fd):
+    def __extract_user_id(cls, request):
         try:
-            _user_id = int(request['from_id'])
-            Clients.set_client(_user_id, fd)
+            _from = int(request['to_id']) if 'to_id' in request else None
+            _to = int(request['from_id'])
+            return _from, _to
         except KeyError:
             raise ValueError("Invalid data structure.")
 
