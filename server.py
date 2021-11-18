@@ -42,10 +42,10 @@ class Server:
             data = connection.recv(cls.__BUFFER_SIZE)  # Should be ready
             if data:
                 print('rec: ', repr(data), 'to', connection)
-                receiver, answer_data = Dispatcher.handle(data, connection.fileno())
-                for user_fd in Clients.get_user(receiver):
-                    Clients.connections[user_fd].send(answer_data)
-                connection.send(answer_data)
+                receivers, answer_data = Dispatcher.handle(data, connection.fileno())
+                for r in receivers:
+                    for user_fd in Clients.get_user(r):
+                        Clients.connections[user_fd][Clients.CONNECTION].sendall(answer_data)
             else:
                 print('closing', connection)
                 cls.close(connection)
