@@ -15,6 +15,10 @@ class Handlers:
 
     @staticmethod
     def init(request):
+        request['messages'] = storage.get_messages(
+            last_message_id=request['last_message_id'],
+            target_id=request['from_id']
+        )
         return request
 
     @staticmethod
@@ -22,10 +26,14 @@ class Handlers:
         _from_id = request['from_id']
         _to_id = request['to_id']
         request['date_time'] = datetime.now().timestamp() * 1000
-        print(request['date_time'])
         _message = request['message']
         # save message to db
-        storage.save_message(request['from_id'], request['to_id'], request['date_time'], request['message'])
+        request['message_id'] = storage.save_message(
+            request['from_id'],
+            request['to_id'],
+            request['date_time'],
+            request['message']
+        )
         return request
 
     @staticmethod
