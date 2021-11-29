@@ -45,4 +45,10 @@ class Storage:
         self.__connection.commit()
         return self.__message_index
 
-
+    def get_messages(self, target_id, last_message_id):
+        self.__cursor.execute(
+            "SELECT index, id_from, id_to, message, date_time FROM messages "
+            "WHERE index > %s and (id_from = %s OR id_to = %s)",
+            (last_message_id or 0, target_id, target_id)
+        )
+        return [(msg[0], msg[1], msg[2], msg[3], float(msg[4])) for msg in self.__cursor.fetchall()]
