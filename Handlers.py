@@ -25,7 +25,12 @@ class Handlers:
         print(request['date_time'])
         _message = request['message']
         # save message to db
-        storage.save_message(request['from_id'], request['to_id'], request['date_time'], request['message'])
+        request['message_id'] = storage.save_message(
+            request['from_id'],
+            request['to_id'],
+            request['date_time'],
+            request['message']
+        )
         return request
 
     @staticmethod
