@@ -32,7 +32,6 @@ class Storage:
         self.__cursor = self.__connection.cursor()
         self.__cursor.execute("select max(index) from messages")
         _index = self.__cursor.fetchone()[0]
-        print(_index)
         self.__message_index = _index + 1 if _index else 0
         self.__connection.commit()
 

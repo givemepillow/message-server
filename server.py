@@ -8,8 +8,8 @@ class Server:
     __selector = selectors.DefaultSelector()
     __BUFFER_SIZE = 1024 * 100
     __BACKLOG = 100
-    __PORT = 6700
-    __ADDRESS = '127.0.0.1'
+    __PORT = None
+    __ADDRESS = None
 
     @classmethod
     def __init(cls):
@@ -20,8 +20,10 @@ class Server:
         cls.__selector.register(sock, selectors.EVENT_READ, cls.accept)
 
     @classmethod
-    def start(cls):
+    def start(cls, port, address):
+        cls.__PORT, cls.__ADDRESS = port, address
         cls.__init()
+        print(f'Starting server on port {cls.__PORT} and address {cls.__ADDRESS}')
         while True:
             events = cls.__selector.select()
             for key, mask in events:
