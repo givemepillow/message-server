@@ -51,3 +51,14 @@ class Storage:
             (last_message_id or 0, target_id, target_id)
         )
         return [(msg[0], msg[1], msg[2], msg[3], float(msg[4])) for msg in self.__cursor.fetchall()]
+
+    def delete_dialog(self, user1_id, user2_id):
+        self.__cursor.execute(
+            """
+            DELETE FROM messages 
+            WHERE (id_from = %s AND id_to = %s) 
+            OR (id_from = %s AND id_to = %s)
+            """,
+            (user1_id, user2_id, user2_id, user1_id)
+        )
+        self.__connection.commit()
