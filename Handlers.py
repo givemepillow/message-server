@@ -49,4 +49,9 @@ class Handlers:
         _from_id = request['from_id']
         _to_id = request['to_id']
         # delete message history from db (for all)
+        storage.delete_dialog(
+            user1_id=_from_id,
+            user2_id=_to_id
+        )
         return request
+
