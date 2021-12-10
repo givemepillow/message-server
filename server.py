@@ -45,7 +45,10 @@ class Server:
                 receivers, answer_data = Dispatcher.handle(data, connection.fileno())
                 for r in receivers:
                     for user_fd in Clients.get_user(r):
-                        Clients.connections[user_fd][Clients.CONNECTION].sendall(answer_data)
+                        try:
+                            Clients.connections[user_fd][Clients.CONNECTION].sendall(answer_data)
+                        except KeyError:
+                            Clients.remove_connection(user_fd)
             else:
                 cls.close(connection)
         except OSError as err:
