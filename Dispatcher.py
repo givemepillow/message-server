@@ -20,12 +20,10 @@ class Dispatcher:
     def handle(cls, data, fd):
         try:
             request = cls.__load_request(data)
-            to_id, from_id = cls.__extract_user_id(request)
+            from_id, to_id = cls.__extract_user_id(request)
             Clients.set_client(from_id, fd)  # set: id - fd - connection
             answer = cls.__execute_handler(request)
-            if to_id == from_id:
-                return (to_id,), answer
-            return (from_id, to_id), answer
+            return {from_id, to_id}, answer
         except ValueError as e:
             print(e)
             return (), cls.__error_handler(str(e))
@@ -46,8 +44,8 @@ class Dispatcher:
     @classmethod
     def __extract_user_id(cls, request):
         try:
-            _from = int(request['to_id']) if 'to_id' in request else None
-            _to = int(request['from_id'])
+            _to = int(request['to_id']) if 'to_id' in request else None
+            _from = int(request['from_id'])
             return _from, _to
         except KeyError:
             raise ValueError("Invalid data structure.")
