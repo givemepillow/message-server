@@ -62,3 +62,13 @@ class Storage:
             (user1_id, user2_id, user2_id, user1_id)
         )
         self.__connection.commit()
+
+    def delete_message(self, message_id):
+        self.__cursor.execute(
+            """
+            DELETE FROM messages 
+            WHERE index = %s
+            """,
+            (message_id, )
+        )
+        self.__connection.commit()
