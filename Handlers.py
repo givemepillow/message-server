@@ -54,7 +54,7 @@ class Handlers:
         _to_id = request['to_id']
         _message_id = request['message_id']
         # delete message from db
-        # ...
+        storage.delete_message(_message_id)
         request['last_update'] = cls.__update_uptime(_from_id, _to_id)
         return request
 
